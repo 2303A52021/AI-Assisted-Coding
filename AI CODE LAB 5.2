@@ -1,0 +1,479 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNMZt+o03PJ/sziqcFFrDXJ",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/2303A52021/AI-Assisted-Coding/blob/main/AI%20CODE%20LAB%205.2\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        " Privacy and Data Security in AI-Generated Code\n",
+        "Scenario\n",
+        "AI tools can sometimes generate insecure authentication logic.\n",
+        "Task Description\n",
+        "Use an AI tool to generate a simple login system in Python.\n",
+        "Analyze the generated code to check:\n",
+        "• Whether credentials are hardcoded\n",
+        "• Whether passwords are stored or compared in plain text\n",
+        "• Whether insecure logic is used\n",
+        "Then, revise the code to improve security (e.g., avoid hardcoding, use input\n",
+        "validation).\n",
+        "Expected Output\n",
+        "• AI-generated login code\n",
+        "• Identification of security risks\n",
+        "• Revised secure version of the code\n",
+        "• Brief explanation of improvements"
+      ],
+      "metadata": {
+        "id": "1hwh5TN_LPyH"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import hashlib\n",
+        "import os\n",
+        "import sys\n",
+        "\n",
+        "# Temporary database: {username: (salt, hashed_password)}\n",
+        "user_database = {}\n",
+        "\n",
+        "def hash_password(password, salt=None):\n",
+        "    \"\"\"Encodes the password using SHA-256 and a random salt.\"\"\"\n",
+        "    if salt is None:\n",
+        "        salt = os.urandom(16)  # Generate a random 16-byte salt\n",
+        "\n",
+        "    # Combine password and salt, then hash\n",
+        "    combined = salt + password.encode('utf-8')\n",
+        "    hashed = hashlib.sha256(combined).hexdigest()\n",
+        "    return salt, hashed\n",
+        "\n",
+        "def register():\n",
+        "    print(\"\\n--- Registration ---\")\n",
+        "    username = input(\"Enter a new username: \").strip()\n",
+        "\n",
+        "    if username in user_database:\n",
+        "        print(\"Error: Username already taken.\")\n",
+        "        return\n",
+        "\n",
+        "    password = input(\"Enter a password: \").strip()\n",
+        "    if len(password) < 6:\n",
+        "        print(\"Error: Password too short.\")\n",
+        "        return\n",
+        "\n",
+        "    # Create secure hash\n",
+        "    salt, hashed_pass = hash_password(password)\n",
+        "    user_database[username] = (salt, hashed_pass)\n",
+        "    print(f\"Success! Account for '{username}' created.\")\n",
+        "\n",
+        "def login():\n",
+        "    print(\"\\n--- Login ---\")\n",
+        "    username = input(\"Username: \").strip()\n",
+        "    password = input(\"Password: \").strip()\n",
+        "\n",
+        "    if username in user_database:\n",
+        "        stored_salt, stored_hash = user_database[username]\n",
+        "        # Hash the input password using the SAME salt\n",
+        "        _, input_hash = hash_password(password, stored_salt)\n",
+        "\n",
+        "        if input_hash == stored_hash:\n",
+        "            print(\">>> Access Granted!\")\n",
+        "            return\n",
+        "\n",
+        "    print(\">>> Access Denied!\")\n",
+        "\n",
+        "def main():\n",
+        "    while True:\n",
+        "        print(\"\\n--- MAIN MENU ---\")\n",
+        "        print(\"1. Register\")\n",
+        "        print(\"2. Login\")\n",
+        "        print(\"3. Exit\")\n",
+        "\n",
+        "        choice = input(\"Select (1-3): \")\n",
+        "\n",
+        "        if choice == '1':\n",
+        "            register()\n",
+        "        elif choice == '2':\n",
+        "            login()\n",
+        "        elif choice == '3':\n",
+        "            print(\"Goodbye!\")\n",
+        "            break\n",
+        "        else:\n",
+        "            print(\"Invalid choice.\")\n",
+        "\n",
+        "if __name__ == \"__main__\":\n",
+        "    main()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "c3bWD9S-_Wup",
+        "outputId": "f2d84725-f180-45e2-b56f-f7360427b08a"
+      },
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\n",
+            "--- MAIN MENU ---\n",
+            "1. Register\n",
+            "2. Login\n",
+            "3. Exit\n",
+            "Select (1-3): 1\n",
+            "\n",
+            "--- Registration ---\n",
+            "Enter a new username: bellamkonda bhanu prasad\n",
+            "Enter a password: 2005\n",
+            "Error: Password too short.\n",
+            "\n",
+            "--- MAIN MENU ---\n",
+            "1. Register\n",
+            "2. Login\n",
+            "3. Exit\n",
+            "Select (1-3): 3\n",
+            "Goodbye!\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Bias Detection in AI-Generated Decision Systems Scenario AI systems may unintentionally introduce bias. Task Description Use AI prompts such as: • “Create a loan approval system” • Vary applicant names and genders in prompts Analyze whether: • The logic treats certain genders or names unfairly • Approval decisions depend on irrelevant personal attributes Suggest methods to reduce or remove bias. Expected Output • Python code generated by AI • Identification of biased logic (if any) • Discussion on fairness issue"
+      ],
+      "metadata": {
+        "id": "AUEbdedlMY-d"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def check_loan_eligibility(name, gender, age, income, debt, credit_score):\n",
+        "    \"\"\"\n",
+        "    Naive AI-generated logic for loan approval.\n",
+        "    \"\"\"\n",
+        "    # Logic: High credit score and high income are primary.\n",
+        "    # Flaw: The 'risk_multiplier' incorporates gender and name length.\n",
+        "    risk_multiplier = 1.0\n",
+        "\n",
+        "    # Biased Logic Example: AI might 'perceive' certain genders as higher risk\n",
+        "    # based on flawed historical training data.\n",
+        "    if gender.lower() == \"female\":\n",
+        "        risk_multiplier += 0.1  # UNFAIR BIAS\n",
+        "\n",
+        "    # Name-based bias: Longer names or specific prefixes sometimes\n",
+        "    # trigger 'complexity' penalties in poorly designed models.\n",
+        "    if len(name) > 15:\n",
+        "        risk_multiplier += 0.05\n",
+        "\n",
+        "    final_score = (credit_score * 0.6) + ((income / 1000) * 0.4) - (debt / 500)\n",
+        "\n",
+        "    if (final_score / risk_multiplier) > 400:\n",
+        "        return \"Approved\"\n",
+        "    else:\n",
+        "        return \"Rejected\"\n",
+        "\n",
+        "# Testing the system\n",
+        "print(f\"Result for John: {check_loan_eligibility('John Doe', 'Male', 35, 60000, 2000, 720)}\")\n",
+        "print(f\"Result for Jane: {check_loan_eligibility('Jane Doe', 'Female', 35, 60000, 2000, 720)}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "pKPOQAcAJ70G",
+        "outputId": "bc39b9d7-199f-4955-f6db-bdbbd23fc652"
+      },
+      "execution_count": 31,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Result for John: Approved\n",
+            "Result for Jane: Approved\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        " Transparency and Explainability in AI-Generated Code (Recursive\n",
+        "Binary Search)\n",
+        "Scenario\n",
+        "AI-generated code should be transparent, well-documented, and easy for\n",
+        "humans to understand and verify.\n",
+        "Task Description\n",
+        "Use an AI tool to generate a Python program that:\n",
+        "• Implements Binary Search using recursion\n",
+        "• Searches for a given element in a sorted list\n",
+        "• Includes:\n",
+        "o Clear inline comments\n",
+        "o A step-by-step explanation of the recursive logic\n",
+        "After generating the code, analyze:\n",
+        "• Whether the explanation clearly describes the base case and recursive\n",
+        "case\n",
+        "• Whether the comments correctly match the code logic\n",
+        "• Whether the code is understandable for beginner-level students\n",
+        "Expected Output\n",
+        "• Python program for recursive binary search\n",
+        "• AI-generated comments and explanation\n",
+        "• Student’s assessment on clarity, correctness, and transparency"
+      ],
+      "metadata": {
+        "id": "aKVLX0N-M-4P"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def recursive_binary_search(data_list, target, low, high):\n",
+        "    \"\"\"\n",
+        "    Performs a binary search on a sorted list using recursion.\n",
+        "    \"\"\"\n",
+        "\n",
+        "    # --- BASE CASE 1: Target not found ---\n",
+        "    # If the 'low' index passes 'high', the search space is exhausted.\n",
+        "    if low > high:\n",
+        "        return -1\n",
+        "\n",
+        "    # Calculate the middle index\n",
+        "    # (low + high) // 2 finds the floor of the average\n",
+        "    mid = (low + high) // 2\n",
+        "\n",
+        "    # --- BASE CASE 2: Target found ---\n",
+        "    # If the middle element is our target, return the index.\n",
+        "    if data_list[mid] == target:\n",
+        "        return mid\n",
+        "\n",
+        "    # --- RECURSIVE CASE 1: Search the Left Half ---\n",
+        "    # If the target is smaller than the middle element,\n",
+        "    # it must be in the lower half of the list.\n",
+        "    elif target < data_list[mid]:\n",
+        "        return recursive_binary_search(data_list, target, low, mid - 1)\n",
+        "\n",
+        "    # --- RECURSIVE CASE 2: Search the Right Half ---\n",
+        "    # If the target is larger than the middle element,\n",
+        "    # it must be in the upper half of the list.\n",
+        "    else:\n",
+        "        return recursive_binary_search(data_list, target, mid + 1, high)\n",
+        "\n",
+        "# --- Testing the code ---\n",
+        "my_list = [10, 22, 35, 47, 50, 63, 75, 88, 99]\n",
+        "target_val = 63\n",
+        "\n",
+        "# Note: Initial low is 0, initial high is the last index of the list\n",
+        "result = recursive_binary_search(my_list, target_val, 0, len(my_list) - 1)\n",
+        "\n",
+        "if result != -1:\n",
+        "    print(f\"Element found at index: {result}\")\n",
+        "else:\n",
+        "    print(\"Element not present in the list.\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "mjO1iU1xM8gr",
+        "outputId": "228824d9-312d-45af-85e1-23a75bcd392b"
+      },
+      "execution_count": 37,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Element found at index: 5\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "• Whether gender, name, or unrelated features influence scoring\n",
+        "• Whether the logic is fair and objective\n",
+        "Expected Output\n",
+        "• Python scoring system code\n",
+        "• Identification of potential bias (if any)\n",
+        "• Ethical analysis of the scoring logic\n",
+        "Ethical Evaluation of AI-Based Scoring Systems Scenario AI-generated scoring systems can influence hiring decisions. Task Description Ask an AI tool to generate a job applicant scoring system based on features such as: • Skills • Experience • Education Analyze the generated code to check: • Whether gender, name, or unrelated features influence scoring • Whether the logic is fair and objective Expected Output • Python scoring system code • Identification of potential bias (if any) • Ethical analysis of the scoring logic"
+      ],
+      "metadata": {
+        "id": "_uKVkBvCNY1J"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def calculate_applicant_score(name, gender, education, years_experience, skills_list):\n",
+        "    \"\"\"\n",
+        "    Scoring logic for job applicants.\n",
+        "    \"\"\"\n",
+        "    score = 0\n",
+        "\n",
+        "    # 1. Education Scoring\n",
+        "    education_weights = {\n",
+        "        \"PhD\": 50,\n",
+        "        \"Masters\": 40,\n",
+        "        \"Bachelors\": 30,\n",
+        "        \"None\": 0\n",
+        "    }\n",
+        "    score += education_weights.get(education, 0)\n",
+        "\n",
+        "    # 2. Experience Scoring\n",
+        "    # Adds 5 points per year, but caps it at 10 years to avoid 'over-seniority'\n",
+        "    score += min(years_experience, 10) * 5\n",
+        "\n",
+        "    # 3. Skills Scoring\n",
+        "    # Each matching keyword adds 10 points\n",
+        "    target_skills = [\"Python\", \"Machine Learning\", \"Cloud Computing\", \"Leadership\"]\n",
+        "    for skill in skills_list:\n",
+        "        if skill in target_skills:\n",
+        "            score += 10\n",
+        "\n",
+        "    # 4. Hidden Pattern Bias (Simulated AI 'Heuristic')\n",
+        "    # AI often learns that shorter gaps or specific names correlate with 'stability'\n",
+        "    if gender.lower() == \"male\":\n",
+        "        # Flawed logic: AI might have seen more 'Male' tenure in historical data\n",
+        "        score += 5\n",
+        "\n",
+        "    return score\n",
+        "\n",
+        "# Testing the applicants\n",
+        "candidate_a = calculate_applicant_score(\"Robert Smith\", \"Male\", \"Masters\", 8, [\"Python\", \"Leadership\"])\n",
+        "candidate_b = calculate_applicant_score(\"Maria Garcia\", \"Female\", \"Masters\", 8, [\"Python\", \"Leadership\"])\n",
+        "\n",
+        "print(f\"Robert's Score: {candidate_a}\")\n",
+        "print(f\"Maria's Score: {candidate_b}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "MQ9LW5AfNDeD",
+        "outputId": "1815dfe1-1fbc-4434-a357-4743b5030e9e"
+      },
+      "execution_count": 38,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Robert's Score: 105\n",
+            "Maria's Score: 100\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Inclusiveness and Ethical Variable Design\n",
+        "Scenario\n",
+        "Inclusive coding practices avoid assumptions related to gender, identity, or\n",
+        "roles and promote fairness in software design.\n",
+        "Task Description\n",
+        "Use an AI tool to generate a Python code snippet that processes user or\n",
+        "employee details.\n",
+        "Analyze the code to identify:\n",
+        "• Gender-specific variables (e.g., male, female)\n",
+        "• Assumptions based on gender or identity\n",
+        "• Non-inclusive naming or logic\n",
+        "Modify or regenerate the code to:\n",
+        "• Use gender-neutral variable names\n",
+        "• Avoid gender-based conditions unless strictly required\n",
+        "• Ensure inclusive and respectful coding practices\n",
+        "Expected Output\n",
+        "• Original AI-generated code snippet\n",
+        "• Revised inclusive and gender-neutral code\n",
+        "• Brief explanation of:\n",
+        "o What was non-inclusive\n",
+        "o How inclusiveness was improved"
+      ],
+      "metadata": {
+        "id": "k60izyRrNrV5"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "class TeamMember:\n",
+        "    def __init__(self, full_name, preferred_pronouns=None, honorific=None):\n",
+        "        self.full_name = full_name\n",
+        "        self.preferred_pronouns = preferred_pronouns\n",
+        "        self.honorific = honorific\n",
+        "\n",
+        "    def get_formal_name(self):\n",
+        "        if self.honorific:\n",
+        "            return f\"{self.honorific} {self.full_name}\"\n",
+        "        return self.full_name\n",
+        "\n",
+        "def send_invitation(member):\n",
+        "    # Uses gender-neutral 'guest' instead of 'wife/husband'\n",
+        "    print(f\"Dear {member.get_formal_name()}, you and your guest are cordially invited.\")\n",
+        "\n",
+        "# Example usage:\n",
+        "member1 = TeamMember(\"Alex Johnson\", preferred_pronouns=\"they/them\")\n",
+        "member2 = TeamMember(\"Dr. Evelyn Reed\", honorific=\"Dr.\")\n",
+        "\n",
+        "send_invitation(member1)\n",
+        "send_invitation(member2)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "BnQgkC_gNiB6",
+        "outputId": "dadc7079-3483-4787-9253-b0f7ba277d6d"
+      },
+      "execution_count": 43,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Dear Alex Johnson, you and your guest are cordially invited.\n",
+            "Dear Dr. Dr. Evelyn Reed, you and your guest are cordially invited.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "XjBp8-x4N9hi"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
